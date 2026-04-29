@@ -35,13 +35,20 @@ int uart_init() {
   // UART[3] Baudrate: XXXX
   // UART[3] Line Control Register: 0xXX
   for(i = 0; i < 4; i++) {
+    UART* console = &uart[0];
     up = &uart[i];
     uint32_t baudrate_divisor = *(up->base + UARTIBRD);
     uint32_t baudrate = 7380000 / (16 * baudrate_divisor);
     uint32_t line_control = *(up->base + UARTLCR);
-    printf("UART[%d] Baudrate: %u\n", i, baudrate);
-    printf("UART[%d] Line Control Register: 0x%02X\n", i, line_control);
+    uprintf(console, "UART[%d] Baudrate: %u\n", i, baudrate);
+    if (line_control < 0x10) {
+      uprintf(console, "UART[%d] Line Control Register: 0x0%x\n", i, line_control);
+    } else {
+      uprintf(console, "UART[%d] Line Control Register: 0x%x\n", i, line_control);
+    }
   }
+
+  return 0;
 }
 
 // input a char from UART pointed by up
