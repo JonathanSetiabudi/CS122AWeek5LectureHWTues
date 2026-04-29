@@ -17,9 +17,31 @@ int uart_init() {
   for (i = 0; i < 4; i++) {  // uart0 to uart2 are adjacent
     up = &uart[i];
     up->base = (char*)(0x101F1000 + i * 0x1000);
+    *(up->base + UARTIBRD) = uart_rate_divisors[4 - i];
+    // 01100000
+    *(up->base + UARTLCR) = 0x60;
     up->n = i;
   }
   uart[3].base = (char*)(0x10009000);  // uart3 at 0x10009000
+  *(uart[3].base + UARTIBRD) = uart_rate_divisors[1];
+  *(uart[3].base + UARTLCR) = 0x60;
+  // Expected output
+  // UART[0] Baudrate: XXXX
+  // UART[0] Line Control Register: 0xXX
+  // UART[1] Baudrate: XXXX
+  // UART[1] Line Control Register: 0xXX
+  // UART[2] Baudrate: XXXX
+  // UART[2] Line Control Register: 0xXX
+  // UART[3] Baudrate: XXXX
+  // UART[3] Line Control Register: 0xXX
+  for(i = 0; i < 4; i++) {
+    up = &uart[i];
+    uint32_t baudrate_divisor = *(up->base + UARTIBRD);
+    uint32_t baudrate = 7380000 / (16 * baudrate_divisor);
+    uint32_t line_control = *(up->base + UARTLCR);
+    printf("UART[%d] Baudrate: %u\n", i, baudrate);
+    printf("UART[%d] Line Control Register: 0x%02X\n", i, line_control);
+  }
 }
 
 // input a char from UART pointed by up

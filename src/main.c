@@ -6,7 +6,7 @@ int sum;
 
 #include "uart.h"  // UART driver code file
 
-int main() {
+int cassia() {
   int i;
   sum = 10;
   char string[64];
@@ -16,13 +16,13 @@ int main() {
   up = &uart[0];  // test UART0
   uprints(up, "Enter lines from serial terminal 0\n\r");
   sum = 1000;
-  while (1) {
-    ugets(up, string);
-    uprints(up, " ");
-    uprints(up, string);
-    uprints(up, "\n\r");
-    if (strcmp(string, "end") == 0) break;
-  }
+  // while (1) {
+  //   ugets(up, string);
+  //   uprints(up, " ");
+  //   uprints(up, string);
+  //   uprints(up, "\n\r");
+  //   if (strcmp(string, "end") == 0) break;
+  // }
 
   uprints(up, "Compute sum of array:\n\r");
   sum = 0;
